@@ -1,22 +1,23 @@
-import logo from './logo.svg';
 import './App.css';
-import SignIn from 'pages/home/login/SignIn';
-import Dashboard from 'pages/dashboard/dashboard';
-import Menubar from 'pages/share/menu/Menubar';
-import Campaigns from 'pages/Campaigns/Campaigns';
 import { RouterProvider } from 'react-router-dom';
 import route from 'routes/Route';
-
+import { AuthContextProvider } from 'context/authContext';
+import { Toaster } from 'react-hot-toast';
+ 
 function App() {
+  
+ 
+  
   return (
     <div className="App">
-      <RouterProvider router={route}>
-            
-      </RouterProvider>
-     {/* <SignIn/> */}
-     {/* <Dashboard/> */}
-     {/* <Menubar/> */}
-     {/* <Campaigns/> */}
+      <AuthContextProvider>
+        <Toaster
+          position="top-center"
+          reverseOrder={false}
+        />
+        <RouterProvider router={route}>
+        </RouterProvider>
+      </AuthContextProvider>
     </div>
   );
 }

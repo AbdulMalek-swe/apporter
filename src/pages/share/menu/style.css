@@ -1,0 +1,34 @@
+ 
+  .sub::before {
+    content: "";
+    position: absolute;
+    display: block;
+    width: 50%;
+    height: 2px;
+    bottom: -6px;
+    left: 0;
+    background-color: #5b1ebc68;
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+  }
+  
+  .sub:hover::before {
+    transform: scaleX(1);
+  }
+ 
+  .menuHover::before {
+    content: "";
+    position: absolute;
+    display: block;
+    width: 100%;
+    height: 2px;
+    bottom: -6px;
+    left: 0;
+    background-color: #5b1ebc68;
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+  }
+  
+  .menuHover:hover::before {
+    transform: scaleX(1);
+  }
