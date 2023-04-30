@@ -3,14 +3,10 @@ import { RouterProvider } from 'react-router-dom';
 import route from 'routes/Route';
 import { AuthContextProvider } from 'context/authContext';
 import { Toaster } from 'react-hot-toast';
- 
 function App() {
-  
- 
-  
   return (
     <div className="App">
-      <AuthContextProvider>
+   <AuthContextProvider>
         <Toaster
           position="top-center"
           reverseOrder={false}

@@ -1,34 +1,39 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import pic from '../../assets/images/logo.png'
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate  } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-hot-toast';
-import { GoogleLogin, useGoogleLogin } from '@react-oauth/google';
-
+import {  useGoogleLogin } from '@react-oauth/google';
+import { AuthContext } from 'context/authContext';
+import load from '../../assets/images/spinner-sm.gif'
 const Register = () => {
+   const {loginData} = useContext(AuthContext)
   const formData = new FormData();
   const { register, handleSubmit, watch, } = useForm();
-  const [img, setImg] = useState(null);
+ const [loader,setLoader] = useState(false);
   const navigate = useNavigate()
-  const handleImg = e => {
-
-    setImg(e.target.files[0])
-  }
+ 
   const onSubmit = data => {
+    setLoader(true)
     formData.append("first_name", data.fname)
     formData.append("last_name", data.lname)
     formData.append("email", data.email)
     formData.append("password", data.password)
     formData.append("username", data.username)
-    formData.append("profile_picture", img)
+   
     fetch('https://mossaddakdevelopedapp.pythonanywhere.com/api/account/sing-up/', {
       method: 'POST',
       body: formData
     })
       .then(response => response.json())
       .then(data => {
-        navigate("/verify")
-        toast.success('Check email');
+        if(data.data.token){
+          setLoader(false)
+          loginData(data.data)
+          navigate("/dashboard")
+        }
+        
+        
       })
       .catch(error => console.log(error));
   }
@@ -41,7 +46,13 @@ const Register = () => {
   });
 
   return (
-    <div class="h-screen md:flex">
+     <>
+     {
+         loader && <div className='flex items-center justify-center h-screen'><img src={load} alt="loading..." width="40px" height="40px"/></div>
+     }
+     {
+      !loader &&
+      <div class="h-screen md:flex">
       <div class="flex items-center justify-center   py-10 md:w-1/2 h-full bg-[#041532]">
         <div>
 
@@ -58,7 +69,7 @@ const Register = () => {
               <input type="text" required placeholder="username" className="input input-bordered   w-full max-w-xs focus:outline-none border-2 inputs text-white border-white mt-1"  {...register("username")} />
               <input type="password" required placeholder="password" className="input input-bordered   w-full max-w-xs focus:outline-none border-2 inputs text-white border-white mt-1"  {...register("password")} />
 
-              <input type="file" required className="input input-bordered   w-full max-w-xs focus:outline-none border-2 inputs text-white border-white mt-1" onChange={handleImg} />
+             
             </div>
             <button type="submit" class="mb-2 mt-4 block w-full rounded-2xl   py-2 font-semibold   bg-white text-gray-400"  >Sign Up</button>
 
@@ -82,6 +93,8 @@ const Register = () => {
         </div>
       </div>
     </div>
+     }
+     </>
   );
 };
 

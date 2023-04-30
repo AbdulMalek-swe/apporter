@@ -1,42 +1,64 @@
 import React, { useEffect, useState } from 'react';
- 
-import { BarChart,Line, Bar,LineChart, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { AiOutlinePauseCircle ,AiFillStar} from 'react-icons/ai'
+
+import { BarChart, Line, Bar, LineChart, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { AiOutlinePauseCircle, AiFillStar } from 'react-icons/ai'
 import { BsMessenger } from 'react-icons/bs'
 import { FaCloudDownloadAlt } from 'react-icons/fa'
 import axios from 'axios';
 import moment from 'moment/moment';
-  
- 
+
+
 // import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
- 
+
 const Dashboard = () => {
-  const [review,setReview] = useState({});
-  const [key,setKey] = useState({});
-  useEffect(()=>{
+  const [review, setReview] = useState({});
+  const [key, setKey] = useState({});
+  const [count, setCount] = useState(0);
+  const [start, setStart] = useState();
+  const [end, setEnd] = useState();
+  useEffect(() => {
     fetch('https://mossaddakdevelopedapp.pythonanywhere.com/api/app/campaign-review/')
-    .then(res=>res.json())
-    .then(data=>{
-    
-      setReview(data)
-    })
-  },[])
-  useEffect(()=>{
-     fetch('https://mossaddakdevelopedapp.pythonanywhere.com/api/app/appkeyword-screenshot/')
-    .then(res=>res.json())
-    .then(data=>{
-     console.log(data);
-      setKey(data)
-    })
-  },[])
-   
+      .then(res => res.json())
+      .then(data => {
+        const startDate = new Date(start);
+        const endDate = new Date(end);
+        
+        const filteredData = data.last_five_days_review
+        .filter(item => {
+          const itemDate = new Date(item.day);
+          console.log(item);
+          return   startDate>=itemDate && itemDate <= endDate;
+        });
+        console.log(filteredData);
+        setReview(data)
+      })
+  }, [start,end])
+  useEffect(() => {
+    fetch('https://mossaddakdevelopedapp.pythonanywhere.com/api/app/appkeyword-screenshot/')
+      .then(res => res.json())
+      .then(data => {
+        console.log(data);
+        setKey(data)
+      })
+  }, [])
+  useEffect(() => {
+    fetch('https://mossaddakdevelopedapp.pythonanywhere.com/api/account/sing-up/')
+      .then(res => res.json())
+      .then(data => {
+        console.log(data);
+        setCount(data?.data?.length)
+      })
+  }, [])
+
   const formatDateString = (dateString) => {
-   
+
     const date = moment(dateString.day);
     return `${date.format('MM')} / ${date.format('D')}`;
   };
+  
   return (
     <div className='bg-white'>
+
       <div className='container-sk'>
         <div class="grid sm:grid-cols-2  xs:grid-cols-1 gap-4 place-content-between items-center my-8">
           <div className='text-start' >
@@ -72,7 +94,7 @@ const Dashboard = () => {
           <div className="card w-full bg-[#eeeeee] rounded-none    border-2">
             <div className="card-body">
               <div><FaCloudDownloadAlt size={33} /></div>
-              <h2 className="card-title text-[#424243]">1232</h2>
+              <h2 className="card-title text-[#424243]">{count ? count : '0'}</h2>
               <h4 className='text-[#aeb0af] text-start'>Install by Apporter users </h4>
             </div>
           </div>
@@ -90,16 +112,18 @@ const Dashboard = () => {
         <div className='bg-gray-200 p-5  my-8'>
           <div className='my-10 sm:my-20 xs:my-20'>
             <div class="grid sm:grid-cols-2  xs:grid-cols-1 gap-4 place-content-between items-center   ">
-              <div  className=''>
+              <div className=''>
                 <h2 className='text-2xl font-bold text-start'>Review statistics</h2>
               </div>
-            
-                <div className='flex md:justify-end'>
-                  <div className='bg-[#d6d6d6] w-[250px] p-2 rounded-xl'>
-                  <span className='bg-white p-1 px-3 m-1 rounded-2xl'>Apr 1, 2023</span>
-                  <span className='bg-white p-1 px-3 m-1 rounded-2xl'>Apr 1, 2023</span>
-              
-                  </div>
+
+              <div className='flex md:justify-end'>
+                <div className='bg-[#d6d6d6] lg:w-[400px] md:w-[250px] p-2 rounded-xl'>
+                  <span className='bg-white p-1 px-3 m-1 rounded-2xl'>
+                    <input type='date' onChange={e => setStart(e.target.value)} className='w-[35%]' />
+                  </span>
+                  <span className='bg-white p-1 px-3 m-1 rounded-2xl'>  <input type='date' onChange={e => setStart(e.target.value)} className='w-[35%]' /></span>
+
+                </div>
               </div>
             </div>
           </div>
@@ -115,7 +139,7 @@ const Dashboard = () => {
 
             >
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis  dataKey={(day) => formatDateString(day)} />
+              <XAxis dataKey={(day) => formatDateString(day)} />
               <YAxis />
               <Tooltip />
               <Legend />
@@ -135,40 +159,40 @@ const Dashboard = () => {
               <div className=' flex justify-end  '>
                 <div className='  flex   items-center    '>
                   <div className='  p-1 m-1 flex items-center mx-1 '> <span className='block w-2 h-2 bg-green-400 rounded-full mx-1 mt-1'></span> keyword</div>
-                 
+
                   <div className='  p-1 m-1 flex items-center '>
-                    
-                     <span className='block w-2 h-2 bg-orange-400 rounded-full mx-1 mt-1'></span> keyword 
-                  
+
+                    <span className='block w-2 h-2 bg-orange-400 rounded-full mx-1 mt-1'></span> keyword
+
                   </div>
                   <div className='  p-1 m-1 flex items-center mx-1'> <span className='block w-2 h-2 bg-yellow-400 rounded-full mx-1 mt-1'></span> keyword</div>
                 </div>
               </div>
             </div>
           </div>
-        
 
- 
+
+
           <ResponsiveContainer width="100%" aspect={16 / 9}>
-        <LineChart
-         
-          data={key?.last_five_days_review}
-          margin={{
-            top: 5,
-            right: 30,
-            left: 20,
-            bottom: 5,
-          }}
-        >
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey={(day) => formatDateString(day)} />
-          <YAxis />
-          <Tooltip />
-          <Legend />
-          <Line type="monotone" dataKey="total_reviews" stroke="#8884d8" activeDot={{ r: 8 }} />
-          
-        </LineChart>
-      </ResponsiveContainer>
+            <LineChart
+
+              data={key?.last_five_days_review}
+              margin={{
+                top: 5,
+                right: 30,
+                left: 20,
+                bottom: 5,
+              }}
+            >
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey={(day) => formatDateString(day)} />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+              <Line type="monotone" dataKey="total_reviews" stroke="#8884d8" activeDot={{ r: 8 }} />
+
+            </LineChart>
+          </ResponsiveContainer>
         </div>
 
 
