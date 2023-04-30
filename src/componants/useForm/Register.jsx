@@ -29,8 +29,9 @@ const Register = () => {
       .then(data => {
         if(data.data.token){
           setLoader(false)
-          loginData(data.data)
           navigate("/dashboard")
+          loginData(data.data)
+         
         }
         
         
