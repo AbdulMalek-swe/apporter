@@ -11,11 +11,12 @@ import moment from 'moment/moment';
 // import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 const Dashboard = () => {
-  const [review, setReview] = useState({});
+  const [review, setReview] = useState([]);
   const [key, setKey] = useState({});
   const [count, setCount] = useState(0);
   const [start, setStart] = useState();
   const [end, setEnd] = useState();
+  const [amount,setAmount] = useState({})
   useEffect(() => {
     fetch('https://mossaddakdevelopedapp.pythonanywhere.com/api/app/campaign-review/')
       .then(res => res.json())
@@ -23,14 +24,22 @@ const Dashboard = () => {
         const startDate = new Date(start);
         const endDate = new Date(end);
         
-        const filteredData = data.last_five_days_review
+        const filteredData = data?.last_five_days_review
         .filter(item => {
           const itemDate = new Date(item.day);
-          console.log(item);
-          return   startDate>=itemDate && itemDate <= endDate;
+          
+          return   itemDate>=startDate  && itemDate <= endDate;
         });
         console.log(filteredData);
-        setReview(data)
+       if(start||end){
+        setReview(filteredData)
+       }   
+     else{
+      setReview(data?.last_five_days_review)
+     }
+     
+
+        setAmount(data)
       })
   }, [start,end])
   useEffect(() => {
@@ -87,7 +96,7 @@ const Dashboard = () => {
           <div className="card w-full bg-[#eeeeee] rounded-none  border-2">
             <div className="card-body">
               <div><BsMessenger size={33} /></div>
-              <h2 className="card-title text-[#424243]">{review?.overall_reviews}</h2>
+              <h2 className="card-title text-[#424243]">{amount?.overall_reviews}</h2>
               <h4 className='text-[#aeb0af] text-start'>Apporter review givens </h4>
             </div>
           </div>
@@ -121,7 +130,7 @@ const Dashboard = () => {
                   <span className='bg-white p-1 px-3 m-1 rounded-2xl'>
                     <input type='date' onChange={e => setStart(e.target.value)} className='w-[35%]' />
                   </span>
-                  <span className='bg-white p-1 px-3 m-1 rounded-2xl'>  <input type='date' onChange={e => setStart(e.target.value)} className='w-[35%]' /></span>
+                  <span className='bg-white p-1 px-3 m-1 rounded-2xl'>  <input type='date' onChange={e => setEnd(e.target.value)} className='w-[35%]' /></span>
 
                 </div>
               </div>
@@ -129,7 +138,7 @@ const Dashboard = () => {
           </div>
           <ResponsiveContainer width="100%" aspect={16 / 9}>
             <BarChart
-              data={review?.last_five_days_review}
+              data={review}
               margin={{
                 top: 5,
                 right: 30,
