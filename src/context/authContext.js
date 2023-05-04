@@ -1,15 +1,20 @@
-import React, { createContext, useState, useEffect } from "react";
+import React, { createContext,  } from "react";
+import { useCookies } from "react-cookie";
  
 export const AuthContext = createContext();
 
 export const AuthContextProvider = ({ children }) => {
-  const [login,setLogin] = useState({});
-  const loginData = e =>{
+  const [cookie,setCookie] = useCookies(["token"])
+  
+  const loginData = async e =>{
       console.log(e);
-      localStorage.setItem("access",e?.token?.access)
+     await setCookie("token",e?.token?.access,{maxAge:3600*24*3})
+      // localStorage.setItem("access",e?.token?.access)
+      return e;
   }
+  
   return (
-    <AuthContext.Provider value={{ loginData }}>
+    <AuthContext.Provider value={{ loginData  }}>
       {children}
     </AuthContext.Provider>
   );

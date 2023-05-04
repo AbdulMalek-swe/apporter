@@ -5,7 +5,7 @@ const Campaigns = () => {
     const [data,setData] = useState([]);
    
     useEffect(()=>{
-      fetch('https://mossaddakdevelopedapp.pythonanywhere.com/api/app/app-screenshot/')
+      fetch('https://apporaterapiv11devbymossaddak.pythonanywhere.com/api/app/app-screenshot/')
       .then(res=>res.json())
       .then(data=>{
         setData(data.data)

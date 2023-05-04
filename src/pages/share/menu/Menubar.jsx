@@ -1,12 +1,14 @@
-import React from 'react';
-import { Link, Outlet } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import img from '../../../assets/images/logo.png'
 import './style.css'
 import { hoverEffectLink, hoverEffectLinkMenu, hoverEffectSpan, hoverEffectSpanMenu } from './menuClass';
+import { useCookies } from 'react-cookie';
 const Menubar = () => {
-
+  const [cookies, setCookie, removeCookie] = useCookies(['token']);
+ 
   const handleLogout = e =>{
-    localStorage.removeItem("access")
+    removeCookie('token');
     window.location.reload()
   }
   let content;
@@ -26,7 +28,7 @@ const Menubar = () => {
                 Dashboard
                 <span className={hoverEffectSpan} ></span>
               </Link>
-              <Link to="/"  className={hoverEffectLink}>
+              <Link to="/packege"  className={hoverEffectLink}>
                 Packeges
                 <span className={hoverEffectSpan} ></span>
               </Link>
@@ -34,7 +36,7 @@ const Menubar = () => {
                 Apps
                 <span className={hoverEffectSpan} ></span>
               </Link>
-              <Link to="/"  className={hoverEffectLink}>
+              <Link to="/keyword"  className={hoverEffectLink}>
                 Keywords
                 <span className={hoverEffectSpan} ></span>
               </Link>
@@ -55,7 +57,7 @@ const Menubar = () => {
               Dashboard
               <span className={hoverEffectSpanMenu} ></span>
             </Link>
-            <Link to="/"  className={hoverEffectLinkMenu}>
+            <Link to="/pakege"  className={hoverEffectLinkMenu}>
               Packeges
               <span className={hoverEffectSpanMenu} ></span>
             </Link>
@@ -63,7 +65,7 @@ const Menubar = () => {
               Apps
               <span className={hoverEffectSpanMenu} ></span>
             </Link>
-            <Link to="/"  className={hoverEffectLinkMenu}>
+            <Link to="/keyword"  className={hoverEffectLinkMenu}>
               Keywords
               <span className={hoverEffectSpanMenu} ></span>
             </Link>
